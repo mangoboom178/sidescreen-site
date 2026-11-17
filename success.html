@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SideScreen — ключ</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="./"><img src="icon.png" alt="">SideScreen</a>
+  <nav><button class="lang-switch" onclick="switchLang()"></button></nav>
+</div></header>
+<main class="wrap doc">
+  <h1 data-t="ok_t"></h1>
+  <p id="state" class="muted" data-t="ok_wait"></p>
+  <div id="result" hidden>
+    <p><b data-t="ok_key"></b></p>
+    <div class="keybox"><span id="key"></span><button class="btn" id="copy" onclick="copyKey()" data-t="ok_copy"></button></div>
+    <p><span data-t="ok_until"></span> <b id="until"></b></p>
+    <p id="how" data-t="ok_how"></p>
+  </div>
+  <p><a class="btn" href="./" data-t="ok_back"></a></p>
+</main>
+<script src="config.js"></script>
+<script src="i18n.js"></script>
+<script>
+const C = window.SIDESCREEN;
+const id = new URLSearchParams(location.search).get("order") || "";
+let tries = 0, exp = 0;
+function showDate() {
+  if (exp) document.getElementById("until").textContent =
+    new Date(exp * 1000).toLocaleDateString(LANG === "ru" ? "ru-RU" : "en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+window.onLangChange = showDate;
+async function poll() {
+  try {
+    const r = await fetch(C.API_URL + "/api/order?id=" + encodeURIComponent(id));
+    const d = await r.json();
+    if (d.status === "paid") {
+      exp = d.exp;
+      document.getElementById("state").hidden = true;
+      document.getElementById("result").hidden = false;
+      document.getElementById("key").textContent = d.key;
+      if (d.renewed) document.getElementById("how").dataset.t = "ok_renewed";
+      applyText(); showDate();
+      return;
+    }
+    if (r.status === 404) throw new Error("nf");
+  } catch (e) {
+    if (++tries > 3) { document.getElementById("state").dataset.t = "ok_fail"; applyText(); return; }
+  }
+  // ЮKassa и криптосервис присылают подтверждение не мгновенно — ждём до ~10 минут
+  if (++tries < 200) setTimeout(poll, 3000);
+  else { document.getElementById("state").dataset.t = "ok_fail"; applyText(); }
+}
+function copyKey() {
+  navigator.clipboard.writeText(document.getElementById("key").textContent).then(() => {
+    const b = document.getElementById("copy"); b.dataset.t = "ok_copied"; applyText();
+  });
+}
+applyText();
+if (id && C.API_URL) poll(); else { document.getElementById("state").dataset.t = "ok_fail"; applyText(); }
+</script>
+</body>
+</html>

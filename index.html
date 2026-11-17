@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SideScreen</title>
+<meta name="description" content="SideScreen — Android-планшет как второй монитор для Windows. Кабель или Wi-Fi, касания, до 60 кадров/с.">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="./"><img src="icon.png" alt="">SideScreen</a>
+  <nav>
+    <a href="#features" data-t="nav_features"></a>
+    <a href="#pricing" data-t="nav_pricing"></a>
+    <a href="#download" data-t="nav_download"></a>
+    <button class="lang-switch" onclick="switchLang()"></button>
+  </nav>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <div>
+    <h1 data-t="hero_title"></h1>
+    <p data-t="hero_sub"></p>
+    <div class="cta">
+      <a class="btn primary" href="#download" data-t="hero_download"></a>
+      <a class="btn" href="#buy" data-t="hero_buy"></a>
+    </div>
+  </div>
+  <div class="scene" aria-hidden="true">
+    <div class="mon"><div class="win" style="left:10%;top:14%;width:52%;height:46%"></div></div>
+    <div class="tab"><div class="win" style="left:12%;top:16%;width:70%;height:58%"></div></div>
+  </div>
+</div>
+
+<section id="features" class="alt"><div class="wrap">
+  <h2 data-t="nav_features"></h2>
+  <div class="grid3">
+    <div class="card"><h3 data-t="f1_t"></h3><p data-t="f1_d"></p></div>
+    <div class="card"><h3 data-t="f2_t"></h3><p data-t="f2_d"></p></div>
+    <div class="card"><h3 data-t="f3_t"></h3><p data-t="f3_d"></p></div>
+    <div class="card"><h3 data-t="f4_t"></h3><p data-t="f4_d"></p></div>
+    <div class="card"><h3 data-t="f5_t"></h3><p data-t="f5_d"></p></div>
+    <div class="card"><h3 data-t="f6_t"></h3><p data-t="f6_d"></p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 data-t="how_t"></h2>
+  <div class="steps">
+    <div class="card"><p data-t="how1"></p></div>
+    <div class="card"><p data-t="how2"></p></div>
+    <div class="card"><p data-t="how3"></p></div>
+  </div>
+</div></section>
+
+<section id="pricing" class="alt"><div class="wrap">
+  <h2 data-t="pr_t"></h2>
+  <div class="plans">
+    <div class="card plan">
+      <h3 data-t="std"></h3>
+      <div class="price" data-t="free"></div>
+      <ul><li data-t="std_1"></li><li data-t="std_2"></li><li data-t="std_3"></li><li data-t="std_4"></li></ul>
+    </div>
+    <div class="card plan max">
+      <h3 data-t="max"></h3>
+      <div class="price"><span id="p-month"></span> <small data-t="per_month"></small></div>
+      <div class="muted"><span id="p-year"></span> <span data-t="per_year"></span> — <span data-t="year_save"></span></div>
+      <ul><li data-t="max_0"></li><li data-t="max_1"></li><li data-t="max_2"></li><li data-t="max_3"></li><li data-t="max_4"></li></ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="buy"><div class="wrap buy">
+  <h2 data-t="buy_t"></h2>
+  <label for="email" data-t="buy_email"></label>
+  <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+  <label data-t="buy_period"></label>
+  <div class="seg">
+    <label><input type="radio" name="period" value="month" checked> <span data-t="month"></span> · <span id="s-month"></span></label>
+    <label><input type="radio" name="period" value="year"> <span data-t="year"></span> · <span id="s-year"></span></label>
+  </div>
+  <label for="renew" data-t="buy_renew"></label>
+  <input id="renew" type="text" data-ph="buy_renew_ph" autocomplete="off" spellcheck="false">
+  <div class="pay">
+    <button class="btn primary" id="pay-card" onclick="pay('yookassa')"><span data-t="pay_card"></span><small data-t="pay_card_note"></small></button>
+    <button class="btn" id="pay-crypto" onclick="pay('crypto')"><span data-t="pay_crypto"></span><small data-t="pay_crypto_note"></small></button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <p class="note" data-t="buy_after"></p>
+  <p class="note"><span data-t="agree"></span> <a href="offer.html" data-t="offer"></a>.</p>
+</div></section>
+
+<section id="download" class="alt"><div class="wrap">
+  <h2 data-t="dl_t"></h2>
+  <div class="dl">
+    <div class="card"><h3 data-t="dl_pc"></h3><p class="muted" data-t="dl_pc_d"></p><a class="btn primary" id="dl-pc" data-t="dl_btn"></a></div>
+    <div class="card"><h3 data-t="dl_apk"></h3><p class="muted" data-t="dl_apk_d"></p><a class="btn" id="dl-apk" data-t="dl_btn"></a></div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© SideScreen</span>
+  <a href="offer.html" data-t="foot_offer"></a>
+  <a href="privacy.html" data-t="foot_privacy"></a>
+  <a id="support" data-t="foot_support"></a>
+</div></footer>
+
+<script src="config.js"></script>
+<script src="i18n.js"></script>
+<script>
+const C = window.SIDESCREEN;
+let prices = C.PRICES;
+
+function money(v, cur) {
+  return new Intl.NumberFormat(LANG === "ru" ? "ru-RU" : "en-US",
+    { style: "currency", currency: cur, maximumFractionDigits: cur === "RUB" ? 0 : 2 }).format(v);
+}
+function showPrices() {
+  // для России — рубли (ЮKassa), для остальных — доллары (криптовалюта)
+  const rub = LANG === "ru";
+  const p = rub ? prices.rub : prices.usd, cur = rub ? "RUB" : "USD";
+  document.getElementById("p-month").textContent = money(p.month, cur);
+  document.getElementById("p-year").textContent = money(p.year, cur);
+  document.getElementById("s-month").textContent = money(p.month, cur);
+  document.getElementById("s-year").textContent = money(p.year, cur);
+}
+window.onLangChange = showPrices;
+
+async function pay(method) {
+  const msg = document.getElementById("msg");
+  msg.className = "msg"; msg.textContent = "";
+  const email = document.getElementById("email").value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className = "msg err"; msg.textContent = t("err_email"); return; }
+  const period = document.querySelector("input[name=period]:checked").value;
+  const key = document.getElementById("renew").value.trim();
+  msg.textContent = t("paying");
+  try {
+    const r = await fetch(C.API_URL + "/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ method, period, email, key: key || undefined }) });
+    const d = await r.json();
+    if (d.url) { location.href = d.url; return; }
+    msg.className = "msg err";
+    msg.textContent = d.error === "unknown_key" ? t("err_key") : d.error === "bad_email" ? t("err_email") : t("err_net");
+  } catch (e) { msg.className = "msg err"; msg.textContent = t("err_net"); }
+}
+
+applyText();
+showPrices();
+document.getElementById("dl-pc").href = C.DOWNLOAD_PC;
+document.getElementById("dl-apk").href = C.DOWNLOAD_APK;
+if (C.SUPPORT_EMAIL) document.getElementById("support").href = "mailto:" + C.SUPPORT_EMAIL;
+else document.getElementById("support").remove();
+const key = new URLSearchParams(location.search).get("key");
+if (key) document.getElementById("renew").value = key;
+if (!C.API_URL) {
+  document.getElementById("pay-card").disabled = true;
+  document.getElementById("pay-crypto").disabled = true;
+  document.getElementById("msg").innerHTML = '<span data-t="buy_soon"></span>';
+  applyText();
+} else {
+  fetch(C.API_URL + "/api/prices").then(r => r.json()).then(p => { if (p.rub) { prices = p; showPrices(); } }).catch(() => {});
+}
+</script>
+</body>
+</html>

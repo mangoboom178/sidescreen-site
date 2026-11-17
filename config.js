@@ -3,7 +3,7 @@ window.SIDESCREEN = {
   API_URL: "",
   DOWNLOAD_PC: "https://github.com/mangoboom178/sidescreen-site/releases/latest/download/SideScreen-Windows.zip",
   DOWNLOAD_APK: "https://github.com/mangoboom178/sidescreen-site/releases/latest/download/SideScreen.apk",
-  SUPPORT_EMAIL: "",
+  SUPPORT_EMAIL: "mangoboom178@gmail.com",
   // способы оплаты на сайте: "crypto" (NOWPayments), "yookassa" (карта/СБП, рубли) — включать по мере подключения
   PAY_METHODS: ["crypto"],
   // цены на случай, если сервер недоступен (настоящие берутся с сервера)

@@ -1,6 +1,6 @@
 // Настройки сайта. API_URL — адрес сервера лицензий (Cloudflare Worker); пока пусто, кнопки оплаты выключены.
 window.SIDESCREEN = {
-  API_URL: "",
+  API_URL: "https://sidescreen-api.sidescreen.workers.dev",
   DOWNLOAD_PC: "https://github.com/mangoboom178/sidescreen-site/releases/latest/download/SideScreen-Windows.zip",
   DOWNLOAD_APK: "https://github.com/mangoboom178/sidescreen-site/releases/latest/download/SideScreen.apk",
   SUPPORT_EMAIL: "mangoboom178@gmail.com",

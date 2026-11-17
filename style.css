@@ -55,6 +55,14 @@ h2 { font-size: 32px; margin: 0 0 28px; letter-spacing: -.01em; }
 .plan li { padding: 4px 0 4px 26px; position: relative; }
 .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 700; }
 .plan.max { border: 2px solid var(--accent); }
+.plans.three { grid-template-columns: repeat(3, 1fr); }
+.plan { display: flex; flex-direction: column; position: relative; }
+.plan ul { flex: 1; }
+.plan .choose { margin-top: 18px; }
+.plan .badge { position: absolute; top: -12px; right: 18px; background: var(--accent); color: var(--on-accent);
+               font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+.plan .invoice { margin-top: 10px; font-size: 14px; text-align: center; }
+.lead { margin: -14px 0 24px; font-size: 17px; }
 .muted { color: var(--muted); }
 .buy { max-width: 640px; }
 label { display: block; font-weight: 600; margin: 16px 0 6px; }
@@ -66,6 +74,7 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
              padding: 10px 14px; cursor: pointer; background: var(--card); }
 .seg input { accent-color: var(--accent); }
 .pay { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+.pay:has(> .btn:only-child) { grid-template-columns: minmax(0, 320px); }
 .pay .btn { flex-direction: column; padding: 16px; gap: 4px; }
 .pay .btn small { font-weight: 400; font-size: 13px; opacity: .8; }
 .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
@@ -84,6 +93,6 @@ footer .wrap { display: flex; gap: 20px; flex-wrap: wrap; }
   .hero { grid-template-columns: 1fr; padding-top: 40px; }
   header .wrap { gap: 12px; }
   .scene { display: none; }
-  .grid3, .steps, .plans, .dl, .pay { grid-template-columns: 1fr; }
+  .grid3, .steps, .plans, .plans.three, .dl, .pay { grid-template-columns: 1fr; }
   nav a { display: none; }
 }

@@ -26,7 +26,7 @@
     <p data-t="hero_sub"></p>
     <div class="cta">
       <a class="btn primary" href="#download" data-t="hero_download"></a>
-      <a class="btn" href="#buy" data-t="hero_buy"></a>
+      <a class="btn" href="#pricing" data-t="hero_buy"></a>
     </div>
   </div>
   <div class="scene" aria-hidden="true">
@@ -58,30 +58,49 @@
 
 <section id="pricing" class="alt"><div class="wrap">
   <h2 data-t="pr_t"></h2>
-  <div class="plans">
-    <div class="card plan">
+  <p class="muted lead" data-t="pr_trial"></p>
+  <div class="plans three">
+    <div class="card plan" data-plan="standard">
       <h3 data-t="std"></h3>
-      <div class="price" data-t="free"></div>
+      <div class="price"><span class="pm"></span> <small data-t="per_month"></small></div>
+      <div class="muted"><span class="py"></span> <span data-t="per_year"></span></div>
       <ul><li data-t="std_1"></li><li data-t="std_2"></li><li data-t="std_3"></li><li data-t="std_4"></li></ul>
+      <button class="btn choose" onclick="choose('standard')" data-t="choose"></button>
     </div>
-    <div class="card plan max">
+    <div class="card plan max" data-plan="max">
+      <div class="badge" data-t="popular"></div>
       <h3 data-t="max"></h3>
-      <div class="price"><span id="p-month"></span> <small data-t="per_month"></small></div>
-      <div class="muted"><span id="p-year"></span> <span data-t="per_year"></span> — <span data-t="year_save"></span></div>
+      <div class="price"><span class="pm"></span> <small data-t="per_month"></small></div>
+      <div class="muted"><span class="py"></span> <span data-t="per_year"></span></div>
       <ul><li data-t="max_0"></li><li data-t="max_1"></li><li data-t="max_2"></li><li data-t="max_3"></li><li data-t="max_4"></li></ul>
+      <button class="btn primary choose" onclick="choose('max')" data-t="choose"></button>
+    </div>
+    <div class="card plan" data-plan="business">
+      <h3 data-t="biz"></h3>
+      <div class="price"><span class="pm"></span> <small data-t="per_month"></small></div>
+      <div class="muted"><span class="py"></span> <span data-t="per_year"></span></div>
+      <ul><li data-t="biz_0"></li><li data-t="biz_1"></li><li data-t="biz_2"></li><li data-t="biz_3"></li></ul>
+      <button class="btn choose" onclick="choose('business')" data-t="choose"></button>
+      <a class="invoice" id="invoice" data-t="biz_invoice"></a>
     </div>
   </div>
 </div></section>
 
 <section id="buy"><div class="wrap buy">
   <h2 data-t="buy_t"></h2>
-  <label for="email" data-t="buy_email"></label>
-  <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+  <label data-t="buy_plan"></label>
+  <div class="seg">
+    <label><input type="radio" name="plan" value="standard"> <span data-t="std"></span></label>
+    <label><input type="radio" name="plan" value="max" checked> <span data-t="max"></span></label>
+    <label><input type="radio" name="plan" value="business"> <span data-t="biz"></span></label>
+  </div>
   <label data-t="buy_period"></label>
   <div class="seg">
     <label><input type="radio" name="period" value="month" checked> <span data-t="month"></span> · <span id="s-month"></span></label>
     <label><input type="radio" name="period" value="year"> <span data-t="year"></span> · <span id="s-year"></span></label>
   </div>
+  <label for="email" data-t="buy_email"></label>
+  <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
   <label for="renew" data-t="buy_renew"></label>
   <input id="renew" type="text" data-ph="buy_renew_ph" autocomplete="off" spellcheck="false">
   <div class="pay">
@@ -114,6 +133,9 @@
 <script>
 const C = window.SIDESCREEN;
 let prices = C.PRICES;
+const METHODS = C.PAY_METHODS || ["yookassa", "crypto"];
+// рубли — только если на сайте есть оплата картой (ЮKassa); иначе всем цены в долларах (криптовалюта)
+const useRub = () => LANG === "ru" && METHODS.includes("yookassa");
 
 function money(v, cur) {
   return new Intl.NumberFormat(LANG === "ru" ? "ru-RU" : "en-US",
@@ -121,13 +143,24 @@ function money(v, cur) {
 }
 function showPrices() {
   // для России — рубли (ЮKassa), для остальных — доллары (криптовалюта)
-  const rub = LANG === "ru";
-  const p = rub ? prices.rub : prices.usd, cur = rub ? "RUB" : "USD";
-  document.getElementById("p-month").textContent = money(p.month, cur);
-  document.getElementById("p-year").textContent = money(p.year, cur);
+  const rub = useRub(), cur = rub ? "RUB" : "USD";
+  const all = prices.plans;
+  document.querySelectorAll(".plan[data-plan]").forEach(card => {
+    const p = all[card.dataset.plan][rub ? "rub" : "usd"];
+    card.querySelector(".pm").textContent = money(p.month, cur);
+    card.querySelector(".py").textContent = money(p.year, cur);
+  });
+  const plan = document.querySelector("input[name=plan]:checked").value;
+  const p = all[plan][rub ? "rub" : "usd"];
   document.getElementById("s-month").textContent = money(p.month, cur);
   document.getElementById("s-year").textContent = money(p.year, cur);
 }
+function choose(plan) {
+  document.querySelector(`input[name=plan][value=${plan}]`).checked = true;
+  showPrices();
+  document.getElementById("buy").scrollIntoView({ behavior: "smooth" });
+}
+document.querySelectorAll("input[name=plan]").forEach(el => el.addEventListener("change", showPrices));
 window.onLangChange = showPrices;
 
 async function pay(method) {
@@ -136,11 +169,12 @@ async function pay(method) {
   const email = document.getElementById("email").value.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className = "msg err"; msg.textContent = t("err_email"); return; }
   const period = document.querySelector("input[name=period]:checked").value;
+  const plan = document.querySelector("input[name=plan]:checked").value;
   const key = document.getElementById("renew").value.trim();
   msg.textContent = t("paying");
   try {
     const r = await fetch(C.API_URL + "/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ method, period, email, key: key || undefined }) });
+      body: JSON.stringify({ method, plan, period, email, key: key || undefined }) });
     const d = await r.json();
     if (d.url) { location.href = d.url; return; }
     msg.className = "msg err";
@@ -152,17 +186,29 @@ applyText();
 showPrices();
 document.getElementById("dl-pc").href = C.DOWNLOAD_PC;
 document.getElementById("dl-apk").href = C.DOWNLOAD_APK;
-if (C.SUPPORT_EMAIL) document.getElementById("support").href = "mailto:" + C.SUPPORT_EMAIL;
-else document.getElementById("support").remove();
+if (C.SUPPORT_EMAIL) {
+  document.getElementById("support").href = "mailto:" + C.SUPPORT_EMAIL;
+  document.getElementById("invoice").href = "mailto:" + C.SUPPORT_EMAIL + "?subject=" +
+    encodeURIComponent("SideScreen Бизнес — счёт для компании");
+} else {
+  document.getElementById("support").remove();
+  document.getElementById("invoice").remove();
+}
+const wantPlan = new URLSearchParams(location.search).get("plan");
+if (["standard", "max", "business"].includes(wantPlan)) document.querySelector(`input[name=plan][value=${wantPlan}]`).checked = true;
 const key = new URLSearchParams(location.search).get("key");
 if (key) document.getElementById("renew").value = key;
+if (!METHODS.includes("yookassa")) {
+  document.getElementById("pay-card").remove();
+  document.getElementById("pay-crypto").classList.add("primary");
+}
+if (!METHODS.includes("crypto")) document.getElementById("pay-crypto").remove();
 if (!C.API_URL) {
-  document.getElementById("pay-card").disabled = true;
-  document.getElementById("pay-crypto").disabled = true;
+  document.querySelectorAll(".pay .btn").forEach(b => { b.disabled = true; });
   document.getElementById("msg").innerHTML = '<span data-t="buy_soon"></span>';
   applyText();
 } else {
-  fetch(C.API_URL + "/api/prices").then(r => r.json()).then(p => { if (p.rub) { prices = p; showPrices(); } }).catch(() => {});
+  fetch(C.API_URL + "/api/prices").then(r => r.json()).then(p => { if (p.plans) { prices = p; showPrices(); } }).catch(() => {});
 }
 </script>
 </body>
